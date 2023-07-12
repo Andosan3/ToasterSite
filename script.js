@@ -304,8 +304,7 @@ $(window).resize(function () {
 createDraggable();
 
 // SCROLL INTERACTION
-let click = document.getElementById("click");
-click.load();
+
 gsap.registerPlugin(ScrollTrigger);
 
 // On page load set image to first collection item image
@@ -317,8 +316,7 @@ function updateImages(currentItem) {
   currentItem.addClass("active");
   let imageSrc = currentItem.find(".work_img").attr("src");
   $(".image").attr("src", imageSrc);
-  click.currentTime = 0;
-  click.play();
+
 }
 
 // Scroll into view trigger
