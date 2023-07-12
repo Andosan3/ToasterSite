@@ -217,7 +217,6 @@ $("[tr-scroll-toggle='component']").each(function (index) {
 
 
 
-
 // DRAGGABLE INTERACTION
 gsap.registerPlugin(Draggable);
 let draggableTimeline;
