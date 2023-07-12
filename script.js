@@ -336,4 +336,3 @@ $(".work_item").each(function (index) {
     }
   });
 });
-
