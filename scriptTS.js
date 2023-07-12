@@ -1,3 +1,34 @@
+//nav menu text
+let splitType = new SplitType("[hoverstagger='text']", {
+  types: "words,chars",
+  tagName: "span"
+});
+
+$("[hoverstagger='link']").each(function (index) {
+  let text1 = $(this).find("[hoverstagger='text']").eq(0);
+  let text2 = $(this).find("[hoverstagger='text']").eq(1);
+
+  let tl = gsap.timeline({
+    paused: true,
+    defaults: {
+      duration: 0.5,
+      ease: "power2.out"
+    }
+  });
+  tl.fromTo(text1.find(".char:nth-child(odd)"), { yPercent: 100 }, { yPercent: 0 });
+  tl.fromTo(text2.find(".char:nth-child(odd)"), { yPercent: 0 }, { yPercent: -100 }, 0);
+  tl.fromTo(text1.find(".char:nth-child(even)"), { yPercent: 0 }, { yPercent: 100 }, 0);
+  tl.fromTo(text2.find(".char:nth-child(even)"), { yPercent: -100 }, { yPercent: 0 }, 0);
+
+  $(this).on("mouseenter", function () {
+    tl.restart();
+  });
+});
+
+
+
+
+
 //TEXT STAGGERS
 
 window.addEventListener("DOMContentLoaded", (event) => {
