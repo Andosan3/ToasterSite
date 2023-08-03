@@ -367,3 +367,221 @@ $(".work_item").each(function (index) {
     }
   });
 });
+
+
+//RECENT PROJECTS STICKY GALLERY CMS
+
+
+// ON PAGE LOAD
+let cmsItem = $(".work_item");
+let count = 0;
+let rotations = [-30, 45, -50, 25, -52, 60];
+// Update text of total slide count
+$(".info_p.is-total-slides").text(cmsItem.length);
+// Create number text for each cms item
+cmsItem.each(function (index) {
+  if (index > 0) {
+    let clone = $(".info_p.is-slide-number").eq(0).clone();
+    clone.text(index + 1);
+    clone.appendTo(".info_num-move");
+  }
+});
+
+// ON SLIDE CHANGE
+function makeActive(index) {
+  cmsItem.removeClass("active");
+  cmsItem.eq(index).addClass("active");
+  $(".info_num-move").css("transform", `translateX(${index * -100}%)`);
+}
+makeActive(0);
+
+// SCROLL INTERACTIONS
+$(".triggers").each(function (index) {
+  let targetItem = cmsItem.eq(index);
+
+  // Cycle through rotations array
+  let rotation = rotations[count];
+  count++;
+  if (count === rotations.length) {
+    count = 0;
+  }
+
+  // ON SCROLL INTO VIEW
+  let tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: $(this),
+      start: "top top",
+      end: "bottom top",
+      toggleActions: "restart none none reverse",
+      onEnter: () => {
+        makeActive(index);
+      },
+      onEnterBack: () => {
+        makeActive(index);
+      }
+    }
+  });
+  // Apply interaction to all items except the first
+  if (index !== 0) {
+    tl.from(
+      targetItem.find(".work_image-wrap"),
+      {
+        duration: 0.5,
+        clipPath: "polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)",
+        rotate: rotation
+      },
+      0
+    )
+      .from(
+        targetItem.find(".work_image"),
+        {
+          duration: 0.5,
+          rotate: rotation * -1
+        },
+        0
+      )
+      .from(
+        targetItem.find(".work_tag"),
+        {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power1.out",
+          stagger: {
+            from: "start",
+            each: 0.1
+          }
+        },
+        0.5
+      )
+      .from(
+        targetItem.find(".work_title"),
+        {
+          y: "5.5em",
+          scaleY: 5,
+          duration: 0.6,
+          ease: "power1.out"
+        },
+        0.5
+      )
+      .from(
+        targetItem.find(".work_link"),
+        {
+          duration: 0.5,
+          opacity: 0
+        },
+        0.5
+      );
+  }
+
+  // ON - WHILE SCROLLING
+  let tlScrub = gsap.timeline({
+    scrollTrigger: {
+      trigger: $(this),
+      start: "top top",
+      end: "bottom top",
+      scrub: 1
+    }
+  });
+  tlScrub.to(
+    targetItem.find(".work_image"),
+    {
+      scale: 1.2,
+      duration: 1,
+      ease: "power2.in"
+    },
+    0
+  );
+});
+</script>
+
+<script>
+// FOOTER HOVER INTERACTIONS --------------------------------------
+
+let imageTL = gsap.timeline({
+  paused: true
+});
+imageTL.to(".footer_image", {
+  y: "0vh",
+  x: "0vw",
+  duration: 0.8,
+  ease: "power1.out",
+  invalidateOnRefresh: true,
+  onReverseComplete: clearStyles,
+  stagger: {
+    each: 0.25,
+    from: "start"
+  }
+});
+let linkTL = gsap.timeline({
+  paused: true,
+  clearProps: "all"
+});
+linkTL.to(".footer_pill", {
+  width: "100%",
+  duration: 0.4,
+  ease: "power1.out",
+  onReverseComplete: clearStyles
+});
+function clearStyles() {
+  for (var i = 0; i < this.targets().length; i++) {
+    gsap.set(this.targets()[i], { clearProps: "all" });
+  }
+}
+$(".footer_pill").on("mouseenter", function () {
+  imageTL.timeScale(1);
+  imageTL.restart();
+  linkTL.restart();
+});
+$(".footer_pill").on("mouseleave", function () {
+  imageTL.timeScale(1.5);
+  if (imageTL.progress() === 1) {
+    setTimeout(() => {
+      imageTL.timeScale(2.4);
+      imageTL.reverse();
+    }, 600);
+  } else {
+    imageTL.reverse();
+  }
+  linkTL.reverse();
+});
+// EMAIL LINK
+let emailTL = gsap.timeline({
+  paused: true
+});
+emailTL
+  .to(".hello", {
+    x: "3.9em",
+    duration: 0.4,
+    ease: "power1.out"
+  })
+  .to(
+    ".footer_link-arrow-side",
+    {
+      x: "100%",
+      duration: 0.4,
+      ease: "power1.out"
+    },
+    0
+  )
+  .to(
+    ".footer_link-arrow-top",
+    {
+      y: "0%",
+      duration: 0.4,
+      ease: "power1.out"
+    },
+    0
+  );
+$(".footer_link").on("mouseenter", function () {
+  emailTL.restart();
+});
+$(".footer_link").on("mouseleave", function () {
+  emailTL.reverse();
+});
+let windowWidth = window.innerWidth;
+window.addEventListener("resize", function () {
+  if (window.innerWidth !== windowWidth) {
+    windowWidth = window.innerWidth;
+    imageTL.invalidate();
+  }
+});
